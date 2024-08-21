@@ -2,11 +2,13 @@
 type Movie = {
     id: string,
     title: string,
-    date: Date
+    date: string,
     year: number,
     duration: string,
     genres: string,
-    director: string
+    director: string,
+    countries: string,
+    cast: string
 } 
 
 type Score = {

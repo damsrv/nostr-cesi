@@ -1,4 +1,4 @@
-const movies: Movie[] = [
+export const movies: Movie[] = [
     {
       id: "1",
       title: "The Lost Empire",
@@ -47,7 +47,7 @@ const movies: Movie[] = [
   ];
 
   
-  const users: User[] = [
+export const users: User[] = [
     {
       id: "user1",
       pubKey: "ABC123",
@@ -76,7 +76,7 @@ const movies: Movie[] = [
   ];
 
 
-  const scores: Score[] = [
+export const scores: Score[] = [
     {
       id: "score1",
       user: users[0],

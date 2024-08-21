@@ -4,8 +4,11 @@ import React from "react";
 import NDK, {
   NDKEvent,
   NDKFilter,
+  NDKPrivateKeySigner,
   NDKSubscriptionOptions,
+  NDKUser,
 } from "@nostr-dev-kit/ndk";
+import { nip19 } from "nostr-tools";
 
 // Find relays at https://nostr.watch
 const defaultRelays = ["wss://relay.nostromo.social"];
@@ -18,15 +21,21 @@ type NDKContextType = {
     handler: (event: NDKEvent) => void,
     opts?: NDKSubscriptionOptions
   ) => void;
+  connectedUser?: string
 };
 
 // define this outside of the below NDKProvider component so that it is in scope for useNDK()
 let NDKContext: React.Context<NDKContextType>;
 
 export const NDKProvider = ({ children }: { children: React.ReactNode }) => {
+
+  // const privateKeySigner = new NDKPrivateKeySigner("nsec1qye4yza0ghl5vlaryhd9nlhkmpa3x8zpcrjq6gjjqgmp0j26z64qhp7hq2");
+
+  let connectedUser: string | undefined = undefined;
+  
   // create a new NDK instance to be used throughout the app
   const ndkLocal = new NDK({ explicitRelayUrls: defaultRelays });
-
+  
   // use a ref to keep the NDK instance in scope for the lifetime of the component
   const ndk = React.useRef(ndkLocal);
 
@@ -52,6 +61,7 @@ export const NDKProvider = ({ children }: { children: React.ReactNode }) => {
 
     // `sub` emits 'event' events when a new nostr event is received
     // our handler then processes the event
+
     sub.on("event", (e: NDKEvent) => handler(e));
   };
 
