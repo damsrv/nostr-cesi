@@ -81,7 +81,7 @@ const GuessMovie = ({ movie }: { movie: Movie }) => {
                     })}
                 </h1>
 
-                <div className="flex justify-between items-center flex-nowrap gap-2">
+                <div className="flex justify-between items-center flex-nowrap gap-2 h-[20px]">
                     {dayState === "today" && (
                         <Link
                             href={"/"}
