@@ -1,25 +1,23 @@
-
 type Movie = {
-    id: string,
-    title: string,
-    date: Date
-    year: number,
-    duration: string,
-    genres: string,
-    director: string
-} 
+    id: string;
+    title: string;
+    date: string;
+    year: number;
+    duration: string;
+    genres: string;
+    director: string;
+    cast: string;
+    countries: string;
+};
 
 type Score = {
-    id: string,
-    user: User,
-    movie: Movie
-}
+    id: string;
+    user: User;
+    movie: Movie;
+};
 
 type User = {
-    id: string,
-    pubKey: string
-    userFollows? : string[]
-} 
-
-
-
+    id: string;
+    pubKey: string;
+    userFollows?: string[];
+};

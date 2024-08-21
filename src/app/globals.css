@@ -3,31 +3,98 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+    --color-background: #202020;
+    --color-foreground: #3a3a3a;
+    --color-primary: #ffb442;
+    --color-secondary: #3182ce;
+    --color-accent: #606060;
+    --color-text: #ffffff;
+    --color-muted: #c6c6c6;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    background-color: var(--color-primary);
+    color: var(--color-text);
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.menu-link {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    text-decoration: none;
+    padding: 0.1rem 0.2rem;
+    font-weight: bold;
+    font-size: 0.8rem;
+    transition: background-color 0.3s;
+}
+.menu-link.active {
+    background-color: var(--color-text);
+    color: var(--color-background);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--color-text);
+    font-weight: 600;
+}
+h1 {
+    font-size: 2.5rem;
+}
+h2 {
+    font-size: 2rem;
+}
+h3 {
+    font-size: 1.75rem;
+}
+h4 {
+    font-size: 1.5rem;
+}
+h5 {
+    font-size: 1.25rem;
+}
+
+.container {
+    width: 1320px !important;
+    margin-inline: auto;
+}
+
+.label {
+    color: var(--color-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.input-movie {
+    background-color: var(--color-foreground);
+    color: var(--color-text);
+    border: 1px solid var(--color-accent);
+    padding: 0.5rem;
+    width: 100%;
+    text-align: center;
+    letter-spacing: 0.3rem;
+    text-transform: uppercase;
+    color: var(--color-text);
+    font-weight: 600;
+}
+.input-movie::placeholder {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+.movie-title {
+    text-transform: uppercase;
+    letter-spacing: 0.3rem;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    padding: 0.5rem 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: 600;
 }
