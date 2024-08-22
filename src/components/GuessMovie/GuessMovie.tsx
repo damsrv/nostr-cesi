@@ -5,11 +5,10 @@ import Link from "next/link";
 import ToGuess from "./ToGuess";
 import AlreadyGuessed from "./AlreadyGuessed";
 
-const GuessMovie = ({ movie }: { movie: Movie }) => {
+const GuessMovie = ({ movie, score }: { movie: Movie, score: { score: number, found: boolean } | undefined }) => {
     let [dayState, setDayState] = useState("today");
     let [status, setStatus] = useState("");
     let [step, setStep] = useState(0);
-    let [score, setScore] = useState(0);
 
     useEffect(() => {
         // si la date du film est égale à la date du jour alors on peut jouer
@@ -32,7 +31,6 @@ const GuessMovie = ({ movie }: { movie: Movie }) => {
         let found = scores.find((score: any) => score.date === movie.date);
         if (found) {
             setStatus(found.status);
-            setScore(found.score);
         } else {
             setStatus("toGuess");
         }

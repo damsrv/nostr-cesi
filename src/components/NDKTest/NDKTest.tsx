@@ -35,7 +35,32 @@ const NDKTest = () => {
             // }
 
         }
-        setMostRecentMovie()
+
+        const getUserScore = async () => {
+            async function getUserScore(date: string, userNpub: string) {
+                const filter: NDKFilter = {
+                    kinds: [NDKKind.Text],
+                    "#t": [`MOVSTR--USER-SCORE--${date}--${userNpub}`],
+                };
+
+                return await ndk.fetchEvent(filter);
+            }
+
+            const event = await getUserScore("2024-08-21", "npub1p6mpew0lva0afu979c20vwfe78nyc9yr2385s5nueu7xyw3shjpsgm23at")
+
+            if (event) {
+                setMostRecentEvents(event.rawEvent())
+            }
+
+            // if(user) {
+            //     const decodedKey = nip19.decode(user!.npub)
+            //     console.log(decodedKey)
+            //     filter.authors = [decodedKey.data.toString()]
+            // }
+
+        }
+        getUserScore()
+        // setMostRecentMovie()
     }, []);
 
 

@@ -17,8 +17,7 @@ const AddEvent = ({ date }: { date: string }) => {
 
     if (ndk.signer) {
       const user = await ndk.signer?.user()
-      const decoded = nip19.decode(user.npub.toString()).data.toString
-      newUserScoreEvent.tags = [["t", `MOVSTR--USER-SCORE--${date}--${decoded}`]]
+      newUserScoreEvent.tags = [["t", `MOVSTR--USER-SCORE--${date}--${user.npub}`]]
     }
 
     const content = { score, found }
@@ -39,8 +38,8 @@ const AddEvent = ({ date }: { date: string }) => {
   }
 
   async function handleClick() {
-    //TODO
-
+    await postScore({ score: 10, found: true })
+    console.log("New score posted")
   }
 
   return (
