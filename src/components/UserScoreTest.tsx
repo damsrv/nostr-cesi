@@ -47,7 +47,6 @@ const UserScoreTest = () => {
 
             if (event) {
                 // setMostRecentEvents(event.rawEvent())
-                console.log(event)
             }
 
             // if(user) {

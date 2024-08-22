@@ -4,11 +4,15 @@ import { useState } from "react";
 import Link from "next/link";
 import ToGuess from "./ToGuess";
 import AlreadyGuessed from "./AlreadyGuessed";
+import { NDKEvent, NDKFilter, NDKKind } from "@nostr-dev-kit/ndk";
+import { useNDK } from "@/hooks/useNDK";
 
 const GuessMovie = ({ movie, scores }: { movie: Movie, scores: Score | undefined }) => {
     let [dayState, setDayState] = useState("today");
     let [status, setStatus] = useState("");
     let [step, setStep] = useState(0);
+
+    const { ndk } = useNDK()
 
     useEffect(() => {
         // si la date du film est égale à la date du jour alors on peut jouer
@@ -26,10 +30,9 @@ const GuessMovie = ({ movie, scores }: { movie: Movie, scores: Score | undefined
     }, [movie]);
 
     useEffect(() => {
-        console.log(scores)
         // on vérifie si le film a déjà été trouvé
         // let scores = JSON.parse(localStorage.getItem("scores") || "[]");
-        if(scores) {
+        if (scores) {
             if (!scores.found) {
                 setStatus("notGuessed");
             } else {
@@ -39,33 +42,38 @@ const GuessMovie = ({ movie, scores }: { movie: Movie, scores: Score | undefined
     }, [scores]);
 
     useEffect(() => {
-        if (status === "justGuessed") {
+        async function sendScore(score: Score) {
+            const user = await ndk.signer?.user();
+            let userNpub = ""
+            if (user) {
+                userNpub = user.npub
+            }
+            const newEvent = new NDKEvent();
+
+            newEvent.kind = 1
+            newEvent.content = JSON.stringify(score)
+
+            newEvent.tags = [["t", `MOVSTR--USER-SCORE--${movie.date}--${userNpub}`]]
+
+            await newEvent.publish()
+        }
+
+        if (status === "justGuessed" && !scores) {
             // on enregistre le score
             let score = 100 - step * 10;
-            let scores = JSON.parse(localStorage.getItem("scores") || "[]");
-            // vérifier si le score existe déjà pour cette date
-            let found = scores.find((score: any) => score.date === movie.date);
-            if (!found) {
-                scores.push({
-                    date: movie.date,
-                    score: score,
-                    status: "justGuessed",
-                });
-                localStorage.setItem("scores", JSON.stringify(scores));
-            }
+
+            sendScore({
+                score: score,
+                found: true
+            })
+
+            console.log("SENT SCORE TO NOSTR")
         }
-        if (status === "notGuessed") {
-            // on enregistre le score
-            let scores = JSON.parse(localStorage.getItem("scores") || "[]");
-            let found = scores.find((score: any) => score.date === movie.date);
-            if (!found) {
-                scores.push({
-                    date: movie.date,
-                    score: 0,
-                    status: "notGuessed",
-                });
-                localStorage.setItem("scores", JSON.stringify(scores));
-            }
+        if (status === "notGuessed" && !scores) {
+            sendScore({
+                score: 0,
+                found: false
+            })
         }
     }, [status]);
 
