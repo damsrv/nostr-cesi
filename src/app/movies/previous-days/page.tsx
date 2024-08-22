@@ -62,7 +62,7 @@ const PreviousDays = () => {
                 </button>
             </div>
 
-            <div className="flex justify-between flex-wrap gap-10 mt-5 mb-5">
+            <div className="flex justify-start flex-wrap gap-10 mt-5 mb-5">
                 {Array.from(
                     { length: numberOfDaysInTheMonth },
                     (_, i) => i + 1

@@ -1,5 +1,13 @@
 "use client";
-import React from "react";
+
+import AddEvent from "@/components/AddEvent/AddEvent";
+import GuessMovie from "@/components/GuessMovie/GuessMovie";
+import NDKTest from "@/components/NDKTest/NDKTest";
+import UserScoreTest from "@/components/UserScoreTest";
+import { useNDK } from "@/hooks/useNDK";
+import { NDKFilter, NDKKind } from "@nostr-dev-kit/ndk";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const MovieCard = ({
@@ -11,24 +19,57 @@ const MovieCard = ({
     month: number;
     year: number;
 }) => {
-    let movie = {
-        id: "5",
-        title: "Intouchables",
-        date: "2024-08-24",
-        year: 2011,
-        duration: "1h 52m",
-        genres: "Biography, Comedy, Drama",
-        director: "Olivier Nakache, Éric Toledano",
-        cast: "François Cluzet, Omar Sy, Anne Le Ny, Audrey Fleurot, Clotilde Mollet, Alba Gaïa Bellugi, Cyril Mendy, Christian Ameri, Grégoire Oestermann, Joséphine de Meaux",
-        countries: "France",
-    };
-    let score = null;
+    const [movie, setMovie] = useState<Movie | undefined>(undefined);
+    const [score, setScore] = useState<Score | undefined>(undefined);
 
-    let date = new Date(year, month - 1, day);
-    // format yyyy-mm-dd
-    let formattedDate = `${year}-${("0" + month).slice(-2)}-${("0" + day).slice(
-        -2
-    )}`;
+    const { ndk } = useNDK();
+    let date = `${year}-${("0" + month).slice(-2)}-${("0" + day).slice(-2)}`;
+
+    useEffect(() => {
+        const setMostRecentMovie = async () => {
+            async function getMovieByDate(date: string) {
+                const filter: NDKFilter = {
+                    kinds: [NDKKind.Text],
+                    "#t": [`MOVSTR--MOVIE--${date}`],
+                };
+
+                return await ndk.fetchEvent(filter);
+            }
+
+            const event = await getMovieByDate(date);
+
+            console.log(event);
+            if (event) {
+                const value = JSON.parse(event.content) as Movie;
+                console.log("MOVIE", value);
+                setMovie(value);
+            }
+        };
+
+        const getUserScore = async () => {
+            async function getUserScore(date: string, userNpub: string) {
+                const filter: NDKFilter = {
+                    kinds: [NDKKind.Text],
+                    "#t": [`MOVSTR--USER-SCORE--${date}--${userNpub}`],
+                };
+
+                return await ndk.fetchEvent(filter);
+            }
+            const user = await ndk.signer?.user();
+
+            if (user) {
+                const event = await getUserScore(date, user.npub);
+
+                if (event) {
+                    const score = JSON.parse(event.content) as Score;
+                    setScore(score);
+                }
+            }
+        };
+
+        setMostRecentMovie();
+        getUserScore();
+    }, [date]);
 
     return (
         <>
@@ -43,11 +84,40 @@ const MovieCard = ({
                                 <span className="text-center">Poster</span>
                             </div>
                             <Link
-                                href={"/movies/" + formattedDate}
+                                href={"/movies/" + date}
                                 className="btn-secondary text-center w-full"
                             >
                                 PLAY
                             </Link>
+                        </div>
+                    )}
+                    {score && (
+                        <div className="flex flex-col items-center gap-4 w-full">
+                            <div className="flex justify-center gap-4">
+                                <span className="font-bold text-xl">{day}</span>
+                            </div>
+                            {score.found ? (
+                                <div className="h-[111px] w-[81px] bg-green-200 flex justify-center items-center border-2 border-accent">
+                                    <span className="text-center">
+                                        {score.found
+                                            ? score.score + " pts"
+                                            : "0 pts"}
+                                    </span>
+                                </div>
+                            ) : (
+                                <div className="h-[111px] w-[81px] bg-red-200 flex justify-center items-center border-2 border-accent">
+                                    <span className="text-center">
+                                        {score.found
+                                            ? score.score + " pts"
+                                            : "0 pts"}
+                                    </span>
+                                </div>
+                            )}
+                            <div className="flex justify-center gap-4">
+                                <span className="font-bold text-xl">
+                                    {movie.title}
+                                </span>
+                            </div>
                         </div>
                     )}
                 </div>
