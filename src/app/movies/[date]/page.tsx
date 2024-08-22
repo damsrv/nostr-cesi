@@ -33,8 +33,11 @@ const MovieByDatePage = ({ params }: MovieByDatePageProps) => {
             }
 
             const event = await getMovieByDate(date);
+
+            console.log(event)
             if (event) {
                 const value = JSON.parse(event.content) as Movie;
+                console.log("MOVIE",value)
                 setTodayMovie(value);
             }
 
@@ -74,7 +77,7 @@ const MovieByDatePage = ({ params }: MovieByDatePageProps) => {
         };
         setMostRecentMovie();
         getUserScore();
-    }, []);
+    }, [params.date]);
     return (
         <main className="flex min-h-screen items-start justify-between py-24 container gap-20">
             {/* <NDKTest /> */}

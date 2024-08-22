@@ -27,6 +27,10 @@ const GuessMovie = ({ movie, scores }: { movie: Movie, scores: Score | undefined
         } else {
             setDayState("future");
         }
+
+        if(!scores) {
+            setStatus("toGuess")
+        }
     }, [movie]);
 
     useEffect(() => {

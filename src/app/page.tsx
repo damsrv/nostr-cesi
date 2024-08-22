@@ -17,8 +17,8 @@ export default function Home() {
     const { ndk } = useNDK();
     const router = useRouter();
 
-    // const date = new Date().toISOString().split("T")[0];
-    const date = "2024-08-21";
+    const date = new Date().toISOString().split("T")[0];
+    // const date = "2024-08-21";
 
     if (!ndk.signer) {
         router.push("/login");
@@ -58,16 +58,20 @@ export default function Home() {
                 return await ndk.fetchEvent(filter);
             }
 
-            const event = await getUserScore(
-                date,
-                "npub1p6mpew0lva0afu979c20vwfe78nyc9yr2385s5nueu7xyw3shjpsgm23at"
-            );
+            const user = await ndk.signer?.user();
 
-            if (event) {
-                const score = JSON.parse(event.content) as Score;
-                setScore(score);
-                console.log(score);
+            if(user) {
+                const event = await getUserScore(
+                    date,
+                    user.npub
+                );
+
+                if (event) {
+                    const score = JSON.parse(event.content) as Score;
+                    setScore(score);
+                }
             }
+
 
             // if(user) {
             //     const decodedKey = nip19.decode(user!.npub)
