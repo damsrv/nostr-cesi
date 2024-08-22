@@ -14,18 +14,28 @@ function Navbar() {
         // Récupérer l'URL de la page
         const currentUrl = window.location.pathname;
         // Définir la valeur de activeLink en fonction de l'URL de la page
-        setActiveLink(currentUrl);
+        setActiveLink(currentUrl ?? "/");
+        console.log("activeLink", currentUrl);
     }, [pathname]);
+    useEffect(() => {
+        // Récupérer l'URL de la page
+        const currentUrl = window.location.pathname;
+        // Définir la valeur de activeLink en fonction de l'URL de la page
+        setActiveLink(currentUrl ?? "");
+        console.log("activeLink", currentUrl);
+    }, []);
+
+    useEffect(() => {}, [activeLink]);
 
     let links = [
         {
             "/": "Movie of the day",
         },
         {
-            "/movies": "Previous days",
+            "/movies/previous-days": "Previous days",
         },
         {
-            "/series": "Friends & Scores",
+            "/scoreboard": "Friends & Scores",
         },
     ];
 

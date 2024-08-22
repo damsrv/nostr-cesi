@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import AddEvent from "@/components/AddEvent/AddEvent";
 import GuessMovie from "@/components/GuessMovie/GuessMovie";
@@ -8,82 +8,85 @@ import { useNDK } from "@/hooks/useNDK";
 import { NDKFilter, NDKKind } from "@nostr-dev-kit/ndk";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import ScoreboardMini from "../components/ScoreboardMini/ScoreboardMini";
 
 export default function Home() {
-  const [todayMovie, setTodayMovie] = useState<Movie | undefined>(undefined)
-  const [score, setScore] = useState<Score | undefined>(undefined);
+    const [todayMovie, setTodayMovie] = useState<Movie | undefined>(undefined);
+    const [score, setScore] = useState<Score | undefined>(undefined);
 
-  const { ndk } = useNDK();
-  const router = useRouter()
+    const { ndk } = useNDK();
+    const router = useRouter();
 
-  // const date = new Date().toISOString().split("T")[0];
-  const date = "2024-08-21";
+    // const date = new Date().toISOString().split("T")[0];
+    const date = "2024-08-21";
 
-  if (!ndk.signer) {
-    router.push("/login")
-  }
-
-  useEffect(() => {
-    const setMostRecentMovie = async () => {
-        async function getMovieByDate(date: string) {
-            const filter: NDKFilter = {
-                kinds: [NDKKind.Text],
-                "#t": [`MOVSTR--MOVIE--${date}`],
-            };
-
-            return await ndk.fetchEvent(filter);
-        }
-
-        const event = await getMovieByDate(date)
-        if (event) {
-            const value = JSON.parse(event.content) as Movie;
-            setTodayMovie(value)
-        }
-
-        // if(user) {
-        //     const decodedKey = nip19.decode(user!.npub)
-        //     console.log(decodedKey)
-        //     filter.authors = [decodedKey.data.toString()]
-        // }
+    if (!ndk.signer) {
+        router.push("/login");
     }
 
-    const getUserScore = async () => {
-        async function getUserScore(date: string, userNpub: string) {
-            const filter: NDKFilter = {
-                kinds: [NDKKind.Text],
-                "#t": [`MOVSTR--USER-SCORE--${date}--${userNpub}`],
-            };
+    useEffect(() => {
+        const setMostRecentMovie = async () => {
+            async function getMovieByDate(date: string) {
+                const filter: NDKFilter = {
+                    kinds: [NDKKind.Text],
+                    "#t": [`MOVSTR--MOVIE--${date}`],
+                };
 
-            return await ndk.fetchEvent(filter);
-        }
+                return await ndk.fetchEvent(filter);
+            }
 
-        const event = await getUserScore(date, "npub1p6mpew0lva0afu979c20vwfe78nyc9yr2385s5nueu7xyw3shjpsgm23at")
+            const event = await getMovieByDate(date);
+            if (event) {
+                const value = JSON.parse(event.content) as Movie;
+                setTodayMovie(value);
+            }
 
-        if (event) {
-            const score = JSON.parse(event.content) as Score;
-            setScore(score);
-            console.log(score)
-        }
+            // if(user) {
+            //     const decodedKey = nip19.decode(user!.npub)
+            //     console.log(decodedKey)
+            //     filter.authors = [decodedKey.data.toString()]
+            // }
+        };
 
-        // if(user) {
-        //     const decodedKey = nip19.decode(user!.npub)
-        //     console.log(decodedKey)
-        //     filter.authors = [decodedKey.data.toString()]
-        // }
+        const getUserScore = async () => {
+            async function getUserScore(date: string, userNpub: string) {
+                const filter: NDKFilter = {
+                    kinds: [NDKKind.Text],
+                    "#t": [`MOVSTR--USER-SCORE--${date}--${userNpub}`],
+                };
 
-    }
-    setMostRecentMovie()
-    getUserScore()
-}, []);
+                return await ndk.fetchEvent(filter);
+            }
 
-  return (
-    <main className="flex min-h-screen justify-between items-start py-24 container gap-20">
-      {/* <NDKTest /> */}
-      {/* <UserScoreTest />
-      <AddEvent date={"2024-08-21"} /> */}
-      {todayMovie &&
-        <GuessMovie movie={todayMovie} scores={score} />
-      }
-    </main>
-  );
+            const event = await getUserScore(
+                date,
+                "npub1p6mpew0lva0afu979c20vwfe78nyc9yr2385s5nueu7xyw3shjpsgm23at"
+            );
+
+            if (event) {
+                const score = JSON.parse(event.content) as Score;
+                setScore(score);
+                console.log(score);
+            }
+
+            // if(user) {
+            //     const decodedKey = nip19.decode(user!.npub)
+            //     console.log(decodedKey)
+            //     filter.authors = [decodedKey.data.toString()]
+            // }
+        };
+        setMostRecentMovie();
+        getUserScore();
+    }, []);
+
+    return (
+        <main className="flex min-h-screen items-start justify-between py-24 container gap-20">
+            {/* <NDKTest /> */}
+
+            {todayMovie && <GuessMovie movie={todayMovie} scores={score} />}
+            <div className="w-[1px] h-[400px] py-5 bg-foreground"></div>
+
+            <ScoreboardMini />
+        </main>
+    );
 }
