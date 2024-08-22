@@ -71,7 +71,10 @@ const GuessMovie = ({ movie, scores }: { movie: Movie, scores: Score | undefined
                 found: true
             })
 
-            console.log("SENT SCORE TO NOSTR")
+            console.log("SENT SCORE TO NOSTR", {
+                score: score,
+                found: true
+            })
         }
         if (status === "notGuessed" && !scores) {
             sendScore({
