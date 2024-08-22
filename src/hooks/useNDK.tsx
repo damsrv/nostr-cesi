@@ -31,7 +31,6 @@ export const NDKProvider = ({ children }: { children: React.ReactNode }) => {
 
   // const privateKeySigner = new NDKPrivateKeySigner("nsec1qye4yza0ghl5vlaryhd9nlhkmpa3x8zpcrjq6gjjqgmp0j26z64qhp7hq2");
 
-  let connectedUser: string | undefined = undefined;
   
   // create a new NDK instance to be used throughout the app
   const ndkLocal = new NDK({ explicitRelayUrls: defaultRelays });
