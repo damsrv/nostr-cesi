@@ -37,7 +37,6 @@ const MovieByDatePage = ({ params }: MovieByDatePageProps) => {
             console.log(event)
             if (event) {
                 const value = JSON.parse(event.content) as Movie;
-                console.log("MOVIE",value)
                 setTodayMovie(value);
             }
 

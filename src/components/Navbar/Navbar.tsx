@@ -15,14 +15,12 @@ function Navbar() {
         const currentUrl = window.location.pathname;
         // Définir la valeur de activeLink en fonction de l'URL de la page
         setActiveLink(currentUrl ?? "/");
-        console.log("activeLink", currentUrl);
     }, [pathname]);
     useEffect(() => {
         // Récupérer l'URL de la page
         const currentUrl = window.location.pathname;
         // Définir la valeur de activeLink en fonction de l'URL de la page
         setActiveLink(currentUrl ?? "");
-        console.log("activeLink", currentUrl);
     }, []);
 
     useEffect(() => {}, [activeLink]);

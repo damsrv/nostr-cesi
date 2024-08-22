@@ -52,7 +52,7 @@ const GuessMovie = ({ movie, scores }: { movie: Movie, scores: Score | undefined
             if (user) {
                 userNpub = user.npub
             }
-            const newEvent = new NDKEvent();
+            const newEvent = new NDKEvent(ndk);
 
             newEvent.kind = 1
             newEvent.content = JSON.stringify(score)
@@ -154,9 +154,9 @@ const GuessMovie = ({ movie, scores }: { movie: Movie, scores: Score | undefined
                 />
             )}
             {status === "alreadyGuessed" ||
-                (status === "justGuessed" && (
+                status === "justGuessed" || status === "notGuessed" && (
                     <AlreadyGuessed movie={movie} status={status} />
-                ))}
+                )}
 
             {dayState === "future" && (
                 <div className="text-center text-text text-xl font-semibold mb-5 h-[400px]">

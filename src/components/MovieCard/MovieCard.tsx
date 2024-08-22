@@ -38,10 +38,8 @@ const MovieCard = ({
 
             const event = await getMovieByDate(date);
 
-            console.log(event);
             if (event) {
                 const value = JSON.parse(event.content) as Movie;
-                console.log("MOVIE", value);
                 setMovie(value);
             }
         };
