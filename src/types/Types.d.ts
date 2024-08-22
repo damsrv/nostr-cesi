@@ -11,9 +11,8 @@ type Movie = {
 };
 
 type Score = {
-    id: string;
-    user: User;
-    movie: Movie;
+    score: number,
+    found: boolean
 };
 
 type User = {

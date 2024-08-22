@@ -5,7 +5,7 @@ import Link from "next/link";
 import ToGuess from "./ToGuess";
 import AlreadyGuessed from "./AlreadyGuessed";
 
-const GuessMovie = ({ movie, score }: { movie: Movie, score: { score: number, found: boolean } | undefined }) => {
+const GuessMovie = ({ movie, scores }: { movie: Movie, scores: Score | undefined }) => {
     let [dayState, setDayState] = useState("today");
     let [status, setStatus] = useState("");
     let [step, setStep] = useState(0);
@@ -26,15 +26,17 @@ const GuessMovie = ({ movie, score }: { movie: Movie, score: { score: number, fo
     }, [movie]);
 
     useEffect(() => {
+        console.log(scores)
         // on vérifie si le film a déjà été trouvé
-        let scores = JSON.parse(localStorage.getItem("scores") || "[]");
-        let found = scores.find((score: any) => score.date === movie.date);
-        if (found) {
-            setStatus(found.status);
-        } else {
-            setStatus("toGuess");
+        // let scores = JSON.parse(localStorage.getItem("scores") || "[]");
+        if(scores) {
+            if (!scores.found) {
+                setStatus("notGuessed");
+            } else {
+                setStatus("justGuessed");
+            }
         }
-    }, [status, step, movie]);
+    }, [scores]);
 
     useEffect(() => {
         if (status === "justGuessed") {
