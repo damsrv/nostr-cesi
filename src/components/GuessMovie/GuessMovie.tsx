@@ -7,12 +7,22 @@ import AlreadyGuessed from "./AlreadyGuessed";
 import { NDKEvent, NDKFilter, NDKKind } from "@nostr-dev-kit/ndk";
 import { useNDK } from "@/hooks/useNDK";
 
-const GuessMovie = ({ movie, scores }: { movie: Movie, scores: Score | undefined }) => {
+const GuessMovie = ({
+    movie,
+    scores,
+}: {
+    movie: Movie;
+    scores: Score | undefined;
+}) => {
     let [dayState, setDayState] = useState("today");
     let [status, setStatus] = useState("");
     let [step, setStep] = useState(0);
 
-    const { ndk } = useNDK()
+    const { ndk } = useNDK();
+
+    useEffect(() => {
+        console.log("status", status);
+    }, [status, step]);
 
     useEffect(() => {
         // si la date du film est égale à la date du jour alors on peut jouer
@@ -28,8 +38,8 @@ const GuessMovie = ({ movie, scores }: { movie: Movie, scores: Score | undefined
             setDayState("future");
         }
 
-        if(!scores) {
-            setStatus("toGuess")
+        if (!scores) {
+            setStatus("toGuess");
         }
     }, [movie]);
 
@@ -48,39 +58,43 @@ const GuessMovie = ({ movie, scores }: { movie: Movie, scores: Score | undefined
     useEffect(() => {
         async function sendScore(score: Score) {
             const user = await ndk.signer?.user();
-            let userNpub = ""
+            let userNpub = "";
             if (user) {
-                userNpub = user.npub
+                userNpub = user.npub;
             }
             const newEvent = new NDKEvent(ndk);
 
-            newEvent.kind = 1
-            newEvent.content = JSON.stringify(score)
+            newEvent.kind = 1;
+            newEvent.content = JSON.stringify(score);
 
-            newEvent.tags = [["t", `MOVSTR--USER-SCORE--${movie.date}--${userNpub}`]]
+            newEvent.tags = [
+                ["t", `MOVSTR--USER-SCORE--${movie.date}--${userNpub}`],
+            ];
 
-            await newEvent.publish()
+            await newEvent.publish();
         }
 
         if (status === "justGuessed" && !scores) {
             // on enregistre le score
             let score = 100 - step * 10;
 
+            console.log("SCORE", score);
+
             sendScore({
                 score: score,
-                found: true
-            })
+                found: true,
+            });
 
             console.log("SENT SCORE TO NOSTR", {
                 score: score,
-                found: true
-            })
+                found: true,
+            });
         }
         if (status === "notGuessed" && !scores) {
             sendScore({
                 score: 0,
-                found: false
-            })
+                found: false,
+            });
         }
     }, [status]);
 
@@ -124,7 +138,7 @@ const GuessMovie = ({ movie, scores }: { movie: Movie, scores: Score | undefined
             {status === "justGuessed" && dayState == "today" && (
                 <div className="text-center text-green-500 text-xl font-semibold mb-5">
                     Congrats ! You found the movie and you earned{" "}
-                    {100 - step * 10} points
+                    {scores ? scores.score : 100 - step * 10} points
                 </div>
             )}
             {status === "justGuessed" && dayState == "past" && (
@@ -153,10 +167,11 @@ const GuessMovie = ({ movie, scores }: { movie: Movie, scores: Score | undefined
                     setStatus={setStatus}
                 />
             )}
-            {status === "alreadyGuessed" ||
-                status === "justGuessed" || status === "notGuessed" && (
-                    <AlreadyGuessed movie={movie} status={status} />
-                )}
+            {(status === "alreadyGuessed" ||
+                status === "justGuessed" ||
+                status === "notGuessed") && (
+                <AlreadyGuessed movie={movie} status={status} />
+            )}
 
             {dayState === "future" && (
                 <div className="text-center text-text text-xl font-semibold mb-5 h-[400px]">

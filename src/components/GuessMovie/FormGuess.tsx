@@ -17,27 +17,35 @@ const FormGuess = ({
     const [guessList, setGuessList] = useState<string[]>([]);
 
     const handleSubmit = () => {
-        let answer = (document.getElementById("guess") as HTMLInputElement)
-            .value;
+        let answerInput = (document.getElementById(
+            "guess"
+        ) as HTMLInputElement)!;
         let errorContainer = document.getElementById("guess-error")!;
 
-        if (!answer) {
+        if (!answerInput.value) {
             errorContainer.textContent = "Please enter an answer";
             return;
         }
 
-        if (answer.toLowerCase() === movie.title.toLowerCase()) {
+        if (answerInput.value.toLowerCase() === movie.title.toLowerCase()) {
             errorContainer.textContent = "";
             setStatus("justGuessed");
         } else {
-            setStep(step + 1);
-            setGuessList([...guessList, answer]);
-            if (step === 6) {
-                setStatus("notGuessed");
+            if (!guessList.includes(answerInput.value)) {
+                setGuessList([...guessList, answerInput.value]);
+                setStep(step + 1);
+                if (step === 6) {
+                    setStatus("notGuessed");
+                    errorContainer.textContent =
+                        "You have reached the maximum number of tries!";
+                } else {
+                    answerInput.value = "";
+                    errorContainer.textContent = "Wrong answer, try again!";
+                }
+            } else if (guessList.includes(answerInput.value)) {
+                answerInput.value = "";
                 errorContainer.textContent =
-                    "You have reached the maximum number of tries!";
-            } else {
-                errorContainer.textContent = "Wrong answer, try again!";
+                    "You have already tried this answer!";
             }
         }
     };

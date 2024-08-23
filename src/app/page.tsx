@@ -36,8 +36,10 @@ export default function Home() {
             }
 
             const event = await getMovieByDate(date);
+            console.log(event);
             if (event) {
                 const value = JSON.parse(event.content) as Movie;
+                console.log(value);
                 setTodayMovie(value);
             }
 
@@ -60,18 +62,14 @@ export default function Home() {
 
             const user = await ndk.signer?.user();
 
-            if(user) {
-                const event = await getUserScore(
-                    date,
-                    user.npub
-                );
+            if (user) {
+                const event = await getUserScore(date, user.npub);
 
                 if (event) {
                     const score = JSON.parse(event.content) as Score;
                     setScore(score);
                 }
             }
-
 
             // if(user) {
             //     const decodedKey = nip19.decode(user!.npub)

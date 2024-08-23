@@ -8,9 +8,8 @@ import Navbar from "@/components/Navbar/Navbar";
 const inter = Outfit({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-    title: "LeBonMentor",
-    description:
-        "LeBonMentor est une plateforme de mentorat en ligne. Trouvez un mentor ou devenez mentor.",
+    title: "MOVSTR",
+    description: "MOVSTR.",
 };
 
 export default function RootLayout({
