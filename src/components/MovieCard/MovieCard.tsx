@@ -14,16 +14,29 @@ const MovieCard = ({
     day,
     month,
     year,
+    setMovieCount,
+    movieCount,
 }: {
     day: number;
     month: number;
     year: number;
+    setMovieCount: any;
+    movieCount: number;
 }) => {
     const [movie, setMovie] = useState<Movie | undefined>(undefined);
     const [score, setScore] = useState<Score | undefined>(undefined);
+    const [date, setDate] = useState<string>(
+        `${year}-${("0" + month).slice(-2)}-${("0" + day).slice(-2)}`
+    );
 
     const { ndk } = useNDK();
-    let date = `${year}-${("0" + month).slice(-2)}-${("0" + day).slice(-2)}`;
+
+    useEffect(() => {
+        setDate(`${year}-${("0" + month).slice(-2)}-${("0" + day).slice(-2)}`);
+    }, [day, month, year]);
+    useEffect(() => {
+        console.log("date", date);
+    }, [date]);
 
     useEffect(() => {
         const setMostRecentMovie = async () => {
@@ -41,6 +54,8 @@ const MovieCard = ({
             if (event) {
                 const value = JSON.parse(event.content) as Movie;
                 setMovie(value);
+                setMovieCount(movieCount + 1);
+            } else {
             }
         };
 
@@ -71,7 +86,7 @@ const MovieCard = ({
 
     return (
         <>
-            {movie && (
+            {movie && movie.date == date && (
                 <div className="bg-foreground p-4 flex gap-4 w-[180px]">
                     {!score && (
                         <div className="flex flex-col items-center gap-4 w-full">

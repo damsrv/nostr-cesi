@@ -63,9 +63,9 @@ function Navbar() {
                 </div>
 
                 <div>USER INFOS</div>
-                <Link href={"/add-movie"}>
+                {/* <Link href={"/add-movie"}>
                     Add movie
-                </Link>
+                </Link> */}
             </nav>
         </div>
     );
